@@ -1,5 +1,5 @@
 pandas
-numpay
+numpy
 matplotlib
 scikit-learn
 keras
