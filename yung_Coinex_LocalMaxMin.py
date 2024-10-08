@@ -12,7 +12,7 @@ from RedNeuronalRecurrente import RNN
 from correo import enviar_correo
 from monitor import update_text_code,post_action,update_test_predictions
 import config
-
+import monitor
 # from IPython.display import clear_output
 
 
@@ -45,6 +45,8 @@ class SwingTradingBot:
         self.error_cuadratico_medio=None
         self.last_prediccion=None
         self.last_loss=None
+
+        self.public_key_temp_api = None
         self.save_state()
 
 
@@ -76,7 +78,7 @@ class SwingTradingBot:
             predictions=predictions[0, 0]
             
             print("=======>>>>>>> Enviando prediccion")
-            update_test_predictions(prediction=predictions,current_price=self.current_price,predict_step=config.predict_step,analisis=self.cant_trainings)
+            self.public_key_temp_api = update_test_predictions(prediction=predictions,current_price=self.current_price,predict_step=config.predict_step,analisis=self.cant_trainings,public_key_temp_api=self.public_key_temp_api)
             if predictions > data.iloc[-1,0]:
                 self.last_patron="LONG"
                 return "LONG",self.last_loss,predictions
@@ -174,7 +176,7 @@ class SwingTradingBot:
         self.current_operation=None
         self.save_state()
         
-        post_action(self.ganancia,self.analisis)
+        self.public_key_temp_api = post_action(self.ganancia,self.analisis,public_key_temp_api=self.public_key_temp_api)
         return s
 
     #LISTO
@@ -306,7 +308,7 @@ def run_bot():
             print("\nPROCESANDO ANALISIS...")
             s=bot.trade()
             clear_console()
-            update_text_code(mensaje=s)
+            bot.public_key_temp_api = update_text_code(mensaje=s,public_key_temp_api=bot.public_key_temp_api)
             print(s)
         except Exception as e:
             clear_console()

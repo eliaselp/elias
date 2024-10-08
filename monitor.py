@@ -7,6 +7,9 @@ import ecc
 
 
 
+    
+    
+    
 
 # Método para cifrar en base64
 def cifrar_base64(texto):
@@ -32,37 +35,40 @@ def dict_a_base64(diccionario):
 
 
 ####################################################################################################################################
-def handcheck():
+def handcheck(public_key_temp_api):
     #crear canal de comunicacion seguro
-    handcheck = {
-        'uid':config.uid,
-        'key':config.api_public_key_auth
-    }
-    handcheck = dict_a_base64(handcheck)
-    url = f'{config.url_base}/setup_chanel/{handcheck}/'
-    public_key_channel = ""
-    response = requests.get(url)
-    if response.status_code == 200:
-        # Verificar el contenido de la respuesta
-        if response.text:
-            try:
-                json_data = response.json()
-                public_key_channel = descifrar_base64(json_data.get('public_key'))
-            except ValueError as e:
-                print("Error al decodificar JSON:", e)
+    if public_key_temp_api is None:
+        handcheck = {
+            'uid':config.uid,
+            'key':config.api_public_key_auth
+        }
+        handcheck = dict_a_base64(handcheck)
+        url = f'{config.url_base}/setup_chanel/{handcheck}/'
+        public_key_channel = ""
+        response = requests.get(url)
+        if response.status_code == 200:
+            # Verificar el contenido de la respuesta
+            if response.text:
+                try:
+                    json_data = response.json()
+                    public_key_channel = descifrar_base64(json_data.get('public_key'))
+                except ValueError as e:
+                    print("Error al decodificar JSON:", e)
+            else:
+                print("La respuesta está vacía")
         else:
-            print("La respuesta está vacía")
-    else:
-        print(f"Error en la solicitud: {response.status_code}")
+            print(f"Error en la solicitud: {response.status_code}")
 
-    print("Public Key Channel: ",public_key_channel,end="\n")
-    return public_key_channel
+        print("Public Key Channel: ",public_key_channel,end="\n")
+        public_key_temp_api = public_key_channel
+
+    return public_key_temp_api
 
 
 
-def post_action(valor,numero_analisis):
+def post_action(valor,numero_analisis,public_key_temp_api):
     try:
-        public_key_channel = handcheck()
+        public_key_channel = handcheck(public_key_temp_api)
         data = {
             'valor': valor,
             'numero_analisis': numero_analisis,
@@ -97,13 +103,14 @@ def post_action(valor,numero_analisis):
         
     except Exception as e:
         print(e)
+    return public_key_channel
 
 
 
 #####################################################################################################################################################################
-def update_text_code(mensaje):
+def update_text_code(mensaje,public_key_temp_api):
     try:
-        public_key_channel = handcheck()
+        public_key_channel = handcheck(public_key_temp_api)
         # Ejemplo de uso
         data = {
             'mensaje': mensaje,
@@ -137,11 +144,12 @@ def update_text_code(mensaje):
             print(f"Error en la solicitud: {response.status_code}")
     except Exception as e:
         print(e)
+    return public_key_channel
 
 
-def update_test_predictions(prediction,current_price,predict_step,analisis):
+def update_test_predictions(prediction,current_price,predict_step,analisis,public_key_temp_api):
     try:
-        public_key_channel = handcheck()
+        public_key_channel = handcheck(public_key_temp_api)
         # Ejemplo de uso
         data = {
             'analisis':str(analisis),
@@ -175,5 +183,5 @@ def update_test_predictions(prediction,current_price,predict_step,analisis):
             print(f"Error en la solicitud: {response.status_code}")
     except Exception as e:
         print(e)        
-
+    return public_key_channel
 

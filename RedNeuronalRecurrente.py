@@ -39,7 +39,7 @@ def get_data_set():
     ohlcv_df = ohlcv_df.drop('timestamp', axis=1)
 
     print(ohlcv_df)
-    input()
+    
 
     return ohlcv_df
 
@@ -47,6 +47,7 @@ def get_data_set():
 def build_model():
     regressor = Sequential()
     regressor.add(Input(shape=(config.time_step, 5)))
+    regressor.add(LSTM(units = 50,return_sequences=True,))
     regressor.add(Dropout(rate = 0.2))
 
     regressor.add(LSTM(units = 50,return_sequences=True,))
@@ -87,7 +88,7 @@ class RNN():
             print("Entrenando modelo")
             self.pre_train(X_train=X_train,y_train=y_train)
         else:
-            if not config.entrenar_dataset:
+            if self.model is None:
                 self.model = build_model()
             #print("YA EL MODELO EXISTE")
             #predictions,loss=self.prediccion(X_test=X_test,y_test=y_test,y_no_scaled=y_no_scaled)
