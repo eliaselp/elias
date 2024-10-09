@@ -52,7 +52,7 @@ Ry+JSjEFE9hyYMXdBqv0bLj9DQ50daqvvAZOKi+SgNiVF/Yi88t8RyhhnA==
 batch_size=1
 epochs=1
 
-time_step=100
-predict_step=3
+time_step=200
+predict_step=1
 
 reset_model = 0
