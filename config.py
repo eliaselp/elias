@@ -16,6 +16,7 @@ temporalidad="15min"
 ENVIO_MAIL=True
 email="liranzaelias@gmail.com"
 Operar=False
+step_training = 30
 entrenar_dataset = True
 incluir_precio_actual=False
 tiempo_espera=10 #segundos
@@ -52,7 +53,7 @@ Ry+JSjEFE9hyYMXdBqv0bLj9DQ50daqvvAZOKi+SgNiVF/Yi88t8RyhhnA==
 batch_size=1
 epochs=1
 
-time_step=200
-predict_step=1
+time_step=100
+predict_step=3
 
 reset_model = 0

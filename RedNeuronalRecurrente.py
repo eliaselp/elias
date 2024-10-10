@@ -13,7 +13,7 @@ import pandas_ta as ta
 import psutil
 
 def get_data_set():
-    ohlcv_df = pd.read_csv("BTC_USDT_ohlcv.csv")
+    ohlcv_df = pd.read_csv("btc_1h.csv")
 
     # Convertir las columnas de precios y volumen a numérico
     ohlcv_df['close'] = pd.to_numeric(ohlcv_df['close'])
@@ -36,7 +36,7 @@ def get_data_set():
     # Eliminar las primeras filas para evitar NaNs
     ohlcv_df = ohlcv_df.dropna()
     ohlcv_df = ohlcv_df.reset_index(drop=True)  # Reset index after dropping rows
-    ohlcv_df = ohlcv_df.drop('timestamp', axis=1)
+    ohlcv_df = ohlcv_df.drop('datetime', axis=1)
 
     print(ohlcv_df)
     
@@ -83,7 +83,7 @@ class RNN():
             data_scaled = RNN.process_data(data)
             
             print("Separando los datos en entrenamiento y prueba")
-            X_train,X_test,y_train,y_test,y_no_scaled=RNN.train_test_split(data_scaled,data,porciento_train=0.99)
+            X_train,y_train,y_no_scaled=RNN.train_test_split(data_scaled,data,porciento_train=None)
                         
             print("Entrenando modelo")
             self.pre_train(X_train=X_train,y_train=y_train)
@@ -140,10 +140,8 @@ class RNN():
         # Obtener la memoria RAM disponible
         mem = psutil.virtual_memory()
         available_memory = mem.available / 2  # Usar solo el 50% de la memoria disponible
-
         # Calcular el tamaño de la sección basado en la memoria disponible
         section_size = int(available_memory // (X_train[0].nbytes + y_train[0].nbytes))
-
         num_sections = len(X_train) // section_size + (1 if len(X_train) % section_size != 0 else 0)
         
         for i in range(num_sections):
@@ -198,10 +196,12 @@ class RNN():
             dataY.append(dataset[i + config.time_step + config.predict_step - 1, 0])  # Precio de cierre de la última vela en la ventana de predicción
             y_no_scaled.append(no_scaled_data.iloc[i + config.time_step + config.predict_step - 1, 0])
         # Utiliza train_test_split de sklearn
-        X_train, X_test, y_train, y_test = tts(dataX, dataY, train_size=porciento_train, random_state=42)
-    
-        y_no_scaled_test = y_no_scaled[len(y_train):]
-        return X_train,X_test,y_train,y_test,y_no_scaled_test
+        if not porciento_train is None:
+            X_train, X_test, y_train, y_test = tts(dataX, dataY, train_size=porciento_train, random_state=42)
+        
+            y_no_scaled_test = y_no_scaled[len(y_train):]
+            return X_train,X_test,y_train,y_test,y_no_scaled_test
+        return dataX,dataY,y_no_scaled
     
 
     @staticmethod
