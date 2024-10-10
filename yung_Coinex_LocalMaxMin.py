@@ -54,19 +54,19 @@ class SwingTradingBot:
         if str(data)!=self.last_data:
 
             self.last_data=str(data)
-            #if self.nuevo == False:
-                #data = data.iloc[data.shape[0]-config.time_step-config.predict_step-3:,:]
-            #else:
-            #    self.nuevo = False
+            if self.nuevo == False:
+                data = data.iloc[data.shape[0]-config.time_step-config.predict_step-100:,:]
+            else:
+                self.nuevo = False
             
             #Escalar los datos
             scaled_data=RNN.process_data(data)
             #separa datos de entrenamiento y prueba
             X_train,X_test,y_train,y_test,y_no_scaled=RNN.train_test_split(scaled_data,data,porciento_train=0.999999999999999)
             
-            if self.cant_trainings == 1 or self.cant_trainings % config.step_training == 0:
-                self.modelo.train(X_train=X_train,y_train=y_train)
-                self.cant_trainings += 1
+            #if self.cant_trainings == 1 or self.cant_trainings % config.step_training == 0:
+            self.modelo.train(X_train=X_train,y_train=y_train)
+            self.cant_trainings += 1
 
             predictions,self.last_loss=self.modelo.prediccion(X_test=X_test,y_test=y_test,y_no_scaled=y_no_scaled)
             
