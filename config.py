@@ -10,6 +10,9 @@ secret_key = "5BBFB51795FDCFB32777F34F113720EC9C2598905DBD679F"  # Replace with 
 simbol="BTCUSDT"
 size=1000
 temporalidad="15min"
+'''
+ ["1min", "3min", "5min", "15min", "30min", "1hour", "2hour", "4hour", "6hour", "12hour" , "1day", "3day", "1week"]
+'''
 
 
 
