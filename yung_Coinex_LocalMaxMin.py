@@ -352,16 +352,16 @@ def run_bot():
     # Iniciar el bot
     while True:
         error=False
-        #try:
-        print("\nPROCESANDO ANALISIS...")
-        s=bot.trade()
-        clear_console()
-        bot.public_key_temp_api = update_text_code(mensaje=s,public_key_temp_api=bot.public_key_temp_api)
-        print(s)
-        #except Exception as e:
-        #    clear_console()
-        #    print(f"Error: {str(e)}\n")
-        #    error=True
+        try:
+            print("\nPROCESANDO ANALISIS...")
+            s=bot.trade()
+            clear_console()
+            bot.public_key_temp_api = update_text_code(mensaje=s,public_key_temp_api=bot.public_key_temp_api)
+            print(s)
+        except Exception as e:
+            clear_console()
+            print(f"Error: {str(e)}\n")
+            error=True
         print("Esperando para el próximo análisis...")
         if error:
             tiempo_espera=1
